@@ -33,8 +33,10 @@ jobs:
           java-version: 21
 
       - name: Setup Android
-        uses: android-actions/setup-android@v3
-
+        uses: android-actions/setup-android@v4
+        with:
+          packages: ''
+        
       - name: Build APK
         run: |
           PROJECT_DIR=$(dirname "$(find project -name package.json -print -quit)")
