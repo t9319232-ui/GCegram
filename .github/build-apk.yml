@@ -32,9 +32,13 @@ jobs:
       - name: Setup Android
         uses: android-actions/setup-android@v3
 
-      - name: Build APK
-        working-directory: GCegram-Android-v4
+            - name: Build APK
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
+          PROJECT_DIR=$(dirname "$(find project -name package.json -print -quit)")
+          cd "$PROJECT_DIR"
           npm install
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npm run build
