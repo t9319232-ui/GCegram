@@ -1,0 +1,51 @@
+name: Build GCegram APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'GCegram-Android-v4-gift-shop.zip'
+      - '.github/workflows/build-apk.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get project
+        uses: actions/checkout@v4
+
+      - name: Unpack project
+        run: unzip GCegram-Android-v4-gift-shop.zip
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Android
+        uses: android-actions/setup-android@v3
+
+      - name: Build APK
+        working-directory: GCegram-Android-v4
+        run: |
+          npm install
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm run build
+          npx cap add android
+          npx cap sync android
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: GCegram-APK
+          path: GCegram-Android-v4/android/app/build/outputs/apk/debug/app-debug.apk
