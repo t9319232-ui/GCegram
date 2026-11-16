@@ -52,8 +52,7 @@ jobs:
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
-      
-          
+         
       - name: Save APK
         uses: actions/upload-artifact@v4
         with:
