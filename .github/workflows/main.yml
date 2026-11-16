@@ -34,15 +34,14 @@ jobs:
 
       - name: Setup Android
         uses: android-actions/setup-android@v4
-        with:
-          packages: ''
-          
+
       - name: Build APK
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
           PROJECT_DIR=$(dirname "$(find project -name package.json -print -quit)")
+          test -n "$PROJECT_DIR"
           cd "$PROJECT_DIR"
           npm install
           npm install @capacitor/core @capacitor/cli @capacitor/android
@@ -52,10 +51,11 @@ jobs:
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
-         
+
       - name: Save APK
         uses: actions/upload-artifact@v4
         with:
           name: GCegram-APK
           path: project/**/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
           
